@@ -1,0 +1,12 @@
+node_modules/
+coverage/
+.env
+.idea
+.vscode
+.DS_Store
+*.tgz
+local/
+
+# VitePress build output
+docs/.vitepress/dist/
+docs/.vitepress/cache/
