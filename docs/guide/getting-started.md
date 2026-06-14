@@ -87,29 +87,33 @@ Not sure you installed the right plugins? Run the doctor:
 npx @moc-global/eslint-config doctor
 ```
 
-## Install without a registry
+## Install without a public registry
 
-There is no public registry yet. Both of these work and need no build step:
+There is no public registry yet. Both paths work; the package is authored in
+TypeScript and compiles itself to `dist/` on install via the `prepare` script
+(for Git installs npm pulls the build devDependencies and runs the build for you):
 
 ::: code-group
 
 ```json [Git dependency]
 {
   "devDependencies": {
-    "@moc-global/eslint-config": "git+ssh://git@github.com/moc-global/eslint-config.git#semver:^1"
+    "@moc-global/eslint-config": "git+ssh://git@github.com/moc-global/eslint-config.git#semver:^2"
   }
 }
 ```
 
 ```bash [Tarball]
-# In the config repo:
-npm pack            # → moc-global-eslint-config-1.0.0.tgz
+# In the config repo (build first; the tarball ships dist/):
+npm run build && npm pack   # → moc-global-eslint-config-2.0.0.tgz
 
 # In your project:
-npm i -D ./vendor/moc-global-eslint-config-1.0.0.tgz
+npm i -D ./vendor/moc-global-eslint-config-2.0.0.tgz
 ```
 
 :::
+
+Once published to a registry, the tarball carries the prebuilt `dist/` (with `.d.ts`) and no install-time build runs.
 
 ## Run it
 

@@ -33,19 +33,23 @@ npm run lint
 - **Add-ons:** Vitest, Jest, Zod, i18next, Tailwind CSS
 - **Out of the box:** type-aware TS linting, import hygiene, security rules, naming conventions, Prettier integration, dead-code detection, and more — see the [rules reference](./docs/reference/plugins.md).
 
-## Install without a registry
+## Installing without a public registry
+
+Until it's published to a registry, install from Git or a tarball. The package is
+authored in TypeScript and **builds itself on install** via the `prepare` script
+(npm installs the build's devDependencies and compiles `dist/` automatically):
 
 ```jsonc
-// git dependency
-"@moc-global/eslint-config": "git+ssh://git@github.com/moc-global/eslint-config.git#semver:^1"
+// git dependency — `prepare` compiles dist/ on install
+"@moc-global/eslint-config": "git+ssh://git@github.com/moc-global/eslint-config.git#semver:^2"
 ```
 
 ```bash
-# or a packed tarball
-npm pack && npm i -D ./moc-global-eslint-config-1.0.0.tgz
+# or a packed tarball (the tarball ships the prebuilt dist/)
+npm run build && npm pack && npm i -D ./moc-global-eslint-config-2.0.0.tgz
 ```
 
-Both are buildless — the package ships plain `.mjs`, nothing to compile.
+Once published, the registry tarball ships the prebuilt `dist/` (with `.d.ts`), so consumers need no build step.
 
 ## Adopting in an existing codebase
 
@@ -74,8 +78,9 @@ Full docs (VitePress): `npm run docs:dev`. Start with:
 ## Development
 
 ```bash
-npm install          # legacy-peer-deps (some plugins lag on the ESLint 10 peer range)
-npm run lint         # the config lints itself
+npm install          # legacy-peer-deps (some plugins lag on the ESLint 10 peer range); `prepare` builds dist/
+npm run build        # tsc → dist/*.js + *.d.ts
+npm run lint         # the config lints its own TypeScript source
 npm run typecheck
 npm run test:run
 npm run docs:dev

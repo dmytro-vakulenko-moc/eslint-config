@@ -16,10 +16,22 @@ The important consequence: **a new rule is a minor bump, not a major one.** Proj
 ```json
 {
   "devDependencies": {
-    "@moc-global/eslint-config": "^1.0.0"
+    "@moc-global/eslint-config": "^2.0.0"
   }
 }
 ```
+
+## 2.0 — TypeScript & build-based distribution
+
+`2.0` ports the package to TypeScript and ships a compiled `dist/` (with `.d.ts`).
+The **public API is unchanged** — `moc()` and every subpath import keep their names —
+but **how you install changes**, which is why it's a major bump:
+
+- Prefer the published registry package (prebuilt, no install-time build).
+- `git+ssh` installs keep working: the `prepare` script compiles `dist/` on install.
+- The package now ships consumer-facing types — `moc(options)` is fully typed.
+
+No code changes are required in your `eslint.config.mjs`.
 
 ## Upgrading a project
 
