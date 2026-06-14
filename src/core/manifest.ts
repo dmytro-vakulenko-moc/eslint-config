@@ -80,7 +80,13 @@ export const STACKS: Record<string, StackDefinition> = {
       'eslint-plugin-react': range('eslint-plugin-react'),
       'eslint-plugin-react-hooks': range('eslint-plugin-react-hooks'),
       'eslint-plugin-react-refresh': range('eslint-plugin-react-refresh'),
-      'eslint-plugin-react-compiler': range('eslint-plugin-react-compiler'),
+      // `eslint-plugin-react-compiler` is intentionally absent here: `moc()`
+      // never loads it (it is opt-in via the `/react-compiler` export), so it is
+      // only an *optional* peer, not part of the auto-installed React stack.
+      // Auto-installing it pulled react-compiler@rc, which pins
+      // zod-validation-error@3.5.4 (no `./v4` export) and crashed ESLint when
+      // eslint-plugin-react-hooks requires `zod-validation-error/v4`.
+      // See fix-consumer-stack-defects (framework-stack-compatibility).
     },
   },
   vue: {

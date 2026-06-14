@@ -153,9 +153,11 @@ export async function moc(options: MocOptions = {}): Promise<Linter.Config[]> {
 
   // Framework layers on top of the Node base.
   if (enabled('react', detected.stacks)) {
-    const entryModule = (await importEntry(STACKS.react)) as unknown as { createReactConfig: () => Linter.Config[] };
+    const entryModule = (await importEntry(STACKS.react)) as unknown as {
+      createReactConfig: (options?: { rootDir?: string }) => Linter.Config[];
+    };
 
-    configs.push(...entryModule.createReactConfig());
+    configs.push(...entryModule.createReactConfig(options));
   }
 
   if (enabled('vue', detected.stacks)) {

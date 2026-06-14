@@ -38,6 +38,10 @@
       "types": "./dist/config/react.eslint.d.ts",
       "import": "./dist/config/react.eslint.js"
     },
+    "./react-compiler": {
+      "types": "./dist/config/react/react-compiler.eslint.d.ts",
+      "import": "./dist/config/react/react-compiler.eslint.js"
+    },
     "./vue": {
       "types": "./dist/config/vue.eslint.d.ts",
       "import": "./dist/config/vue.eslint.js"
