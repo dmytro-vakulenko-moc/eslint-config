@@ -42,7 +42,11 @@ Vue single-file components can be parsed for plain JS or type-aware TS. Opt into
 moc({ vue: true, vueTs: true });
 ```
 
-Remember to include `*.vue` in your `tsconfig.json` and ESLint file globs.
+Remember to include `*.vue` in your `tsconfig.json` and ESLint file globs, and
+add a `*.vue` type shim (`declare module '*.vue'`) so `import App from './App.vue'`
+type-resolves under the TypeScript parser. PascalCase is enforced on SFC
+**filenames** only (not directories), and Prettier — not eslint-plugin-vue —
+owns SFC formatting.
 
 ## Add-ons
 
