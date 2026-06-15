@@ -1,0 +1,6 @@
+# Code owners are auto-requested for review on matching paths.
+#
+# TODO: replace the placeholder below with the real GitHub team or user handle,
+# e.g. `* @moc-global/frontend-platform` or `* @<maintainer-handle>`.
+# An unknown handle is harmless (GitHub just shows a warning and requests no one).
+* @moc-global/eslint-config-maintainers
