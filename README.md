@@ -33,6 +33,24 @@ npm run lint
 - **Add-ons:** Vitest, Jest, Zod, i18next, Tailwind CSS
 - **Out of the box:** type-aware TS linting, import hygiene, security rules, naming conventions, Prettier integration, dead-code detection, and more — see the [rules reference](./docs/reference/plugins.md).
 
+## Examples
+
+Four runnable example consumers live in [`examples/`](./examples) — each installs the
+packed tarball and lints with a bare `export default moc()` (Vue opts into type-aware
+SFCs with `moc({ vueTs: true })`):
+
+| Example | Stack |
+| --- | --- |
+| [`typescript-app`](./examples/typescript-app) | Node + TypeScript, path aliases, layered architecture |
+| [`react-app`](./examples/react-app) | React 19 + TypeScript (JSX runtime) |
+| [`nest-app`](./examples/nest-app) | NestJS — decorators, class-validator DTOs, Swagger |
+| [`vue-app`](./examples/vue-app) | Vue 3 `<script setup lang="ts">` single-file components |
+
+They double as living documentation **and** as a verification gate:
+`npm run verify:examples` installs the freshly-packed config into each one and runs its
+lint + typecheck, so a rule or plugin that breaks in a real consumer install fails
+loudly. CI runs this on every push and PR.
+
 ## Installing without a public registry
 
 Until it's published to a registry, install from Git or a tarball. The package is
@@ -78,13 +96,19 @@ Full docs (VitePress): `npm run docs:dev`. Start with:
 ## Development
 
 ```bash
-npm install          # legacy-peer-deps (some plugins lag on the ESLint 10 peer range); `prepare` builds dist/
-npm run build        # tsc → dist/*.js + *.d.ts
-npm run lint         # the config lints its own TypeScript source
+npm install              # legacy-peer-deps; `prepare` builds dist/ and installs husky git hooks
+npm run build            # tsc → dist/*.js + *.d.ts
+npm run lint             # the config lints its own TypeScript source
 npm run typecheck
-npm run test:run
+npm run test:run         # vitest — includes the React/Nest/Vue dogfood tests
+npm run verify:examples  # install the packed config into examples/* and lint each
 npm run docs:dev
 ```
+
+A **husky `pre-push` hook** runs `lint` + `typecheck` + `test:run` automatically before
+every push (the dogfood tests there compose `moc()` for each stack and lint a fixture, so
+a broken rule or plugin is caught locally). CI additionally runs the heavier
+`verify:examples` real-install check.
 
 ## License
 
