@@ -1,9 +1,14 @@
 name: CI
 
+# CI is intentionally DISABLED for now — all checks run locally via the husky
+# pre-push hook (lint, typecheck, test:run, pack:check, verify:examples).
+# This workflow is kept (manual-only) so it can be switched back on later:
+# to re-enable automated CI, uncomment the push/pull_request triggers below.
 on:
-  push:
-    branches: [main]
-  pull_request:
+  workflow_dispatch: {} # manual-only; does not run automatically on push/PR
+  # push:
+  #   branches: [main]
+  # pull_request:
 
 # Husky's git hooks are irrelevant in CI; skip them so `npm ci`'s `prepare`
 # step just builds dist/.

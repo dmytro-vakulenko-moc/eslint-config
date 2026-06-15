@@ -1,6 +1,13 @@
-# Pre-push gate: lint the config's own source, typecheck, and run the test
-# suite — which includes the framework-stack dogfood tests that compose moc()
-# for React / NestJS / Vue and lint a fixture, catching failing rules or plugins
-# before they leave your machine. The heavier real-consumer-install check
-# (`npm run verify:examples`) runs in CI, where its ~4 npm installs are fine.
-npm run lint && npm run typecheck && npm run test:run
+# Pre-push gate — runs the full check suite locally (GitHub CI is disabled).
+#
+#   lint           the config lints its own TypeScript source
+#   typecheck      tsc --noEmit
+#   test:run       vitest, incl. the React/Nest/Vue dogfood tests (compose moc()
+#                  + lint a fixture) — catches failing rules or plugins
+#   pack:check     the published tarball ships only dist/
+#   verify:examples pack the config + install it into every examples/* project
+#                  and lint/typecheck each (a real consumer install)
+#
+# verify:examples does ~4 npm installs, so this hook is not instant. To skip it
+# for a one-off push: `git push --no-verify`.
+npm run lint && npm run typecheck && npm run test:run && npm run pack:check && npm run verify:examples
