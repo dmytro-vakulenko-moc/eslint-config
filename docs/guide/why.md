@@ -21,7 +21,7 @@ Every team accumulates lint configuration: a `.eslintrc` here, a copied `eslint.
 | Principle | What it means in practice |
 |---|---|
 | **Bundled core, optional frameworks** | Core plugins are dependencies of this package, so their versions are locked centrally. Framework plugins (React/Vue/Nest) are optional peers, installed only when you need them. |
-| **Buildless** | The package ships plain `.mjs`. No compile step, so it installs cleanly from a git URL or a tarball and there is nothing to get out of sync. |
+| **Typed** | Authored in TypeScript and published with `.d.ts` declarations, so `moc()` and its options are fully typed in your editor. A `tsc` build produces the runnable `dist/`; git/tarball installs build it automatically via `prepare`. |
 | **Auto-detecting** | `moc()` reads your `package.json` and enables the stacks it finds. You can always override with explicit flags. |
 | **Adoptable** | Existing projects baseline their violations with ESLint bulk suppressions and fix them over time, instead of facing a wall of errors on day one. |
 

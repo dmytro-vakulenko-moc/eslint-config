@@ -2,7 +2,7 @@ import { createRequire } from 'node:module';
 
 import { describe, expect, it } from 'vitest';
 
-import { EXTRAS, PACKAGE_NAME, requiredPlugins, STACKS } from '../src/cli/stacks.mjs';
+import { EXTRAS, PACKAGE_NAME, requiredPlugins, STACKS } from '../src/core/manifest.js';
 
 const require = createRequire(import.meta.url);
 const package_ = require('../package.json');
@@ -43,13 +43,15 @@ describe('requiredPlugins', () => {
     const plugins = requiredPlugins(['react']);
 
     expect(Object.keys(plugins)).toEqual(
-      expect.arrayContaining([
-        'eslint-plugin-react',
-        'eslint-plugin-react-hooks',
-        'eslint-plugin-react-refresh',
-        'eslint-plugin-react-compiler',
-      ]),
+      expect.arrayContaining(['eslint-plugin-react', 'eslint-plugin-react-hooks', 'eslint-plugin-react-refresh']),
     );
+  });
+
+  it('does NOT require eslint-plugin-react-compiler (it is opt-in, never loaded by moc())', () => {
+    // Auto-installing react-compiler pinned zod-validation-error@3.5.4 (no ./v4
+    // export) and crashed ESLint for React consumers. It is an optional peer,
+    // available via the `/react-compiler` opt-in export only.
+    expect(requiredPlugins(['react'])).not.toHaveProperty('eslint-plugin-react-compiler');
   });
 
   it('merges plugins across multiple selections and ignores unknown keys', () => {

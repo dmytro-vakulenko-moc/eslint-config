@@ -33,19 +33,41 @@ npm run lint
 - **Add-ons:** Vitest, Jest, Zod, i18next, Tailwind CSS
 - **Out of the box:** type-aware TS linting, import hygiene, security rules, naming conventions, Prettier integration, dead-code detection, and more — see the [rules reference](./docs/reference/plugins.md).
 
-## Install without a registry
+## Examples
+
+Four runnable example consumers live in [`examples/`](./examples) — each installs the
+packed tarball and lints with a bare `export default moc()` (Vue opts into type-aware
+SFCs with `moc({ vueTs: true })`):
+
+| Example | Stack |
+| --- | --- |
+| [`typescript-app`](./examples/typescript-app) | Node + TypeScript, path aliases, layered architecture |
+| [`react-app`](./examples/react-app) | React 19 + TypeScript (JSX runtime) |
+| [`nest-app`](./examples/nest-app) | NestJS — decorators, class-validator DTOs, Swagger |
+| [`vue-app`](./examples/vue-app) | Vue 3 `<script setup lang="ts">` single-file components |
+
+They double as living documentation **and** as a verification gate:
+`npm run verify:examples` installs the freshly-packed config into each one and runs its
+lint + typecheck, so a rule or plugin that breaks in a real consumer install fails
+loudly. The husky **pre-push** hook runs it locally before every push.
+
+## Installing without a public registry
+
+Until it's published to a registry, install from Git or a tarball. The package is
+authored in TypeScript and **builds itself on install** via the `prepare` script
+(npm installs the build's devDependencies and compiles `dist/` automatically):
 
 ```jsonc
-// git dependency
-"@moc-global/eslint-config": "git+ssh://git@github.com/moc-global/eslint-config.git#semver:^1"
+// git dependency — `prepare` compiles dist/ on install
+"@moc-global/eslint-config": "git+ssh://git@github.com/moc-global/eslint-config.git#semver:^2"
 ```
 
 ```bash
-# or a packed tarball
-npm pack && npm i -D ./moc-global-eslint-config-1.0.0.tgz
+# or a packed tarball (the tarball ships the prebuilt dist/)
+npm run build && npm pack && npm i -D ./moc-global-eslint-config-2.0.0.tgz
 ```
 
-Both are buildless — the package ships plain `.mjs`, nothing to compile.
+Once published, the registry tarball ships the prebuilt `dist/` (with `.d.ts`), so consumers need no build step.
 
 ## Adopting in an existing codebase
 
@@ -74,12 +96,20 @@ Full docs (VitePress): `npm run docs:dev`. Start with:
 ## Development
 
 ```bash
-npm install          # legacy-peer-deps (some plugins lag on the ESLint 10 peer range)
-npm run lint         # the config lints itself
+npm install              # legacy-peer-deps; `prepare` builds dist/ and installs husky git hooks
+npm run build            # tsc → dist/*.js + *.d.ts
+npm run lint             # the config lints its own TypeScript source
 npm run typecheck
-npm run test:run
+npm run test:run         # vitest — includes the React/Nest/Vue dogfood tests
+npm run verify:examples  # install the packed config into examples/* and lint each
 npm run docs:dev
 ```
+
+All checks run **locally** via a **husky `pre-push` hook** before every push:
+`lint` + `typecheck` + `test:run` (whose dogfood tests compose `moc()` for each stack and
+lint a fixture) + `pack:check` + `verify:examples`. A GitHub Actions workflow
+(`.github/workflows/ci.yml`) is kept on hand but **disabled** for now (manual-only). Use
+`git push --no-verify` to skip the hook for a one-off push.
 
 ## License
 

@@ -20,7 +20,7 @@ The ESLint core recommended ruleset (`pluginJs.configs.recommended`). This is th
 
 #### Owned "best-practices" ruleset (core ESLint rules)
 
-Defined in `src/node/best-practices.eslint.mjs`, this is not a plugin but a hand-maintained set of core ESLint rules that replaces the now-unmaintained `eslint-config-airbnb-base`. It ensures the team keeps Airbnb's battle-tested logic-level conventions without depending on a dead package. Representative rules: `array-callback-return`, `no-param-reassign` (with carve-outs for accumulators and request/response objects), `consistent-return`, `no-await-in-loop`, `prefer-template`, `prefer-destructuring`, and a large `no-restricted-globals` list that blocks accidental use of browser globals like `name` or `location` in Node code.
+Defined in `src/config/node/best-practices.eslint.ts`, this is not a plugin but a hand-maintained set of core ESLint rules that replaces the now-unmaintained `eslint-config-airbnb-base`. It ensures the team keeps Airbnb's battle-tested logic-level conventions without depending on a dead package. Representative rules: `array-callback-return`, `no-param-reassign` (with carve-outs for accumulators and request/response objects), `consistent-return`, `no-await-in-loop`, `prefer-template`, `prefer-destructuring`, and a large `no-restricted-globals` list that blocks accidental use of browser globals like `name` or `location` in Node code.
 
 #### `eslint-plugin-sonarjs`
 
@@ -28,7 +28,7 @@ SonarSource's code-quality and bug-detection rules (`recommended` preset). It en
 
 #### `eslint-plugin-unicorn`
 
-A broad collection of "modern, more correct JavaScript" rules (`recommended` preset). It ensures the codebase prefers current platform APIs and consistent idioms over legacy patterns — for example preferring `node:` protocol imports, modern `Array`/`String` methods, and explicit error handling. The config relaxes a few opinionated rules (`no-null`, `no-array-for-each`, `prefer-top-level-await`) and configures `prevent-abbreviations` with an allow-list (`spec`, `param`, `e2e`, `rootDir`) so meaningful short names are not flagged.
+A broad collection of "modern, more correct JavaScript" rules (`recommended` preset). It ensures the codebase prefers current platform APIs and consistent idioms over legacy patterns — for example preferring `node:` protocol imports, modern `Array`/`String` methods, and explicit error handling. The config relaxes a few opinionated rules (`no-null`, `no-array-for-each`, `prefer-top-level-await`) and configures `prevent-abbreviations` with an allow-list (`spec`, `param`, `e2e`, `rootDir`, `props`/`Props`) so meaningful short names — including the universal React `*Props` convention — are not flagged.
 
 #### `eslint-plugin-promise`
 
@@ -36,7 +36,7 @@ Promise and async correctness (`flat/recommended` preset). It ensures `Promise` 
 
 #### `eslint-plugin-n`
 
-Node.js-specific correctness (`flat/recommended-module` preset). It ensures code targets the Node version range the project actually supports: it flags deprecated Node APIs, unsupported syntax/built-ins for the declared engines, missing or unpublished imports, and `process.exit()` in library code. Scripts and config files relax these (see `src/node/scripts.eslint.mjs` and `eslint-rules.eslint.mjs`) since they run on the local toolchain rather than the shipped runtime.
+Node.js-specific correctness (`flat/recommended-module` preset). It ensures code targets the Node version range the project actually supports: it flags deprecated Node APIs, unsupported syntax/built-ins for the declared engines, missing or unpublished imports, and `process.exit()` in library code. Scripts and config files relax these (see `src/config/node/scripts.eslint.ts` and `eslint-rules.eslint.ts`) since they run on the local toolchain rather than the shipped runtime.
 
 #### `eslint-plugin-regexp`
 
@@ -52,7 +52,7 @@ A custom rules plugin (`strict` preset). Here it ensures all logging goes throug
 
 #### Owned "custom-style" logic rules
 
-In `src/node/custom-style.eslint.mjs`, another set of core ESLint rules covering logic-level style (not formatting, which Prettier owns). It ensures consistent, defensive code: `eqeqeq` (with `null` ignored), `curly: all`, `no-eval`, `no-console` as an error, `prefer-const`, `no-var`, `no-throw-literal`, `radix`, and `no-use-before-define`.
+In `src/config/node/custom-style.eslint.ts`, another set of core ESLint rules covering logic-level style (not formatting, which Prettier owns). It ensures consistent, defensive code: `eqeqeq` (with `null` ignored), `curly: all`, `no-eval`, `no-console` as an error, `prefer-const`, `no-var`, `no-throw-literal`, `radix`, and `no-use-before-define`.
 
 ### Imports & module hygiene
 
@@ -110,11 +110,11 @@ JSDoc completeness and correctness. It ensures public surface area is documented
 
 #### `typescript-eslint`
 
-The TypeScript engine of the whole config — parser plus rules. It ensures TypeScript code is held to the strictest practical standard using **type-aware linting**: `src/typescript/project.eslint.mjs` wires up the parser with `projectService: true`, so rules can read the type checker, not just the syntax tree. The ruleset applies both `strictTypeChecked` and `stylisticTypeChecked` presets to `*.{ts,tsx,mts,cts}` files. On top of the presets, `src/typescript/overrides.eslint.mjs` enforces team conventions: `consistent-type-definitions: interface`, `consistent-type-imports` (separate `import type`), `switch-exhaustiveness-check`, `prefer-readonly`, and the typed replacements (`@typescript-eslint/no-unused-vars`, `no-shadow`, `no-useless-constructor`) for their core counterparts, which are turned off on TS files so they do not double-report.
+The TypeScript engine of the whole config — parser plus rules. It ensures TypeScript code is held to the strictest practical standard using **type-aware linting**: `src/config/typescript/project.eslint.ts` wires up the parser with `projectService: true`, so rules can read the type checker, not just the syntax tree. The ruleset applies both `strictTypeChecked` and `stylisticTypeChecked` presets to `*.{ts,tsx,mts,cts}` files. On top of the presets, `src/config/typescript/overrides.eslint.ts` enforces team conventions: `consistent-type-definitions: interface`, `consistent-type-imports` (separate `import type`), `switch-exhaustiveness-check`, `prefer-readonly`, and the typed replacements (`@typescript-eslint/no-unused-vars`, `no-shadow`, `no-useless-constructor`) for their core counterparts, which are turned off on TS files so they do not double-report.
 
 #### `eslint-config-naming`
 
-A shareable naming-convention config layered onto the `@typescript-eslint` plugin, scoped to TypeScript files (`src/typescript/naming.eslint.mjs`). It ensures consistent identifier naming across the codebase — types, interfaces, variables, and members — going beyond what the core `camelcase` rule (which covers plain `.js`/`.mjs`) can express.
+A shareable naming-convention config layered onto the `@typescript-eslint` plugin, scoped to TypeScript files (`src/config/typescript/naming.eslint.ts`). It ensures consistent identifier naming across the codebase — types, interfaces, variables, and members — going beyond what the core `camelcase` rule (which covers plain `.js`/`.ts`) can express.
 
 ## Framework plugins (optional peers)
 
@@ -124,7 +124,7 @@ These are optional `peerDependencies`. Install them only for the frameworks you 
 
 #### `eslint-plugin-react`
 
-The canonical React linting plugin (`recommended` + `jsx-runtime` presets). It ensures correct JSX and component usage: valid prop types and usage, no missing `key` props in lists, no deprecated lifecycle patterns, and — via `jsx-runtime` — that the new automatic JSX transform is respected (no spurious "React must be in scope" errors). React version is auto-detected.
+The canonical React linting plugin (`recommended` + `jsx-runtime` presets). It ensures correct JSX and component usage: valid prop types and usage, no missing `key` props in lists, no deprecated lifecycle patterns, and — via `jsx-runtime` — that the new automatic JSX transform is respected (no spurious "React must be in scope" errors). The config resolves the React version from your installed `react` package and pins it in `settings.react.version` (it does **not** use the plugin's `'detect'` mode, whose version detector calls a `context.getFilename()` API removed in modern ESLint).
 
 #### `eslint-plugin-react-hooks`
 
@@ -134,15 +134,15 @@ Rules of Hooks enforcement (`recommended-latest` preset). It ensures Hooks are o
 
 Fast Refresh safety (`vite` preset). It ensures component modules stay compatible with hot module replacement by flagging exports that would break Fast Refresh (for example mixing component and non-component exports in one file). The benefit is a reliable dev experience.
 
-#### `eslint-plugin-react-compiler`
+#### `eslint-plugin-react-compiler` (opt-in — not part of the React stack)
 
-React Compiler validation (opt-in, `src/react/react-compiler.eslint.mjs`). When a project has the React 19 compiler enabled, `react-compiler/react-compiler` ensures components follow the rules the compiler depends on for safe auto-memoization, surfacing code the compiler would otherwise bail out on.
+React Compiler validation. Unlike the three plugins above, this is **not** activated by the React stack and is **not** auto-installed: it is an optional peer that `moc()` never loads. Enable it explicitly via the `@moc-global/eslint-config/react-compiler` export (see [Stacks → React Compiler](/guide/stacks#react-compiler-opt-in)) only when your project runs the React 19 compiler. When enabled, `react-compiler/react-compiler` ensures components follow the rules the compiler depends on for safe auto-memoization, surfacing code the compiler would otherwise bail out on.
 
 ### Vue
 
 #### `eslint-plugin-vue` + `vue-eslint-parser`
 
-Vue 3 Single-File-Component linting (`flat/recommended` preset). The plugin ensures `<template>` and `<script>` blocks follow the official Vue 3 style guide — correct directive usage, component naming, prop and event conventions, and template best practices. `vue-eslint-parser` is the parser that makes SFCs lintable at all; the optional Vue+TS layer (`src/vue/vue-ts.eslint.mjs`) chains it with the `@typescript-eslint` parser so `<script lang="ts">` blocks get full type-aware linting. SFC filenames are enforced to PascalCase per the style guide.
+Vue 3 Single-File-Component linting (`flat/recommended` preset). The plugin ensures `<template>` and `<script>` blocks follow the official Vue 3 style guide — correct directive usage, component naming, prop and event conventions, and template best practices. `vue-eslint-parser` is the parser that makes SFCs lintable at all; the optional Vue+TS layer (`src/config/vue/vue-ts.eslint.ts`) chains it with the `@typescript-eslint` parser so `<script lang="ts">` blocks get full type-aware linting. SFC filenames are enforced to PascalCase per the style guide.
 
 ### NestJS
 

@@ -1,0 +1,26 @@
+{
+  "name": "vue-app-example",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Example Vue 3 + TypeScript project consuming @moc-global/eslint-config",
+  "engines": {
+    "node": "^22.21.0 || >=24.10.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@moc-global/eslint-config": "file:../../moc-global-eslint-config-2.0.0.tgz",
+    "eslint": "^10.2.1",
+    "eslint-plugin-vue": "^10.9.2",
+    "typescript": "^5.7.0",
+    "vue-eslint-parser": "^10.4.1",
+    "vue-tsc": "^2.2.0"
+  }
+}
