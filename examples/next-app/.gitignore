@@ -1,0 +1,8 @@
+node_modules/
+.next/
+out/
+*.tgz
+next-env.d.ts
+# The lockfile pins the local tarball's integrity hash, which changes on every
+# rebuild — let `npm install` regenerate it.
+package-lock.json
